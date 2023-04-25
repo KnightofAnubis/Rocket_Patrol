@@ -20,6 +20,7 @@
     create() {
         const width = this.scale.width;
         const height = this.scale.height;
+        
         // place tile.sprite
         //this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
 
@@ -105,6 +106,43 @@
         this.time = this.add.text(game.config.width/2, borderUISize + borderPadding*2, '', scoreConfig);
         this.startTime = Math.floor(this.sys.game.loop.time/1000); //converts it to normal seconds not the 6000 in the tutorial
         
+        //Background music
+        this.sound.audioPlayDelay = 0.1;
+        this.sound.loopEndOffset = 0.05;
+        
+        const loopMarker = {
+            name: 'loop',
+            start: 0,
+            duration: 34,
+            config: {
+                volume: 0.2,
+                loop: true
+            }
+        };
+
+        this.music =  this.sound.add('background_music');
+        
+        
+        if (!this.sound.locked)
+        {
+            // already unlocked so play
+            this.music.addMarker(loopMarker);
+            this.music.play('loop', {
+                delay: 0
+            });
+        }
+        else
+        {
+            // wait for 'unlocked' to fire and then play
+            this.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+                this.music.addMarker(loopMarker);
+                this.music.play('loop', {
+                    delay: 0
+                });
+            });
+        }
+        
+        
     }
 
 
@@ -133,6 +171,7 @@
             this.time.setText(`Time: ${game.settings.gameTimer - this.currentTime }`);
             if(this.currentTime > game.settings.gameTimer) {
                 scoreConfig.fixedWidth = 0; 
+                this.music.pause();
                 this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
                 this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
                 this.gameOver = true;
@@ -223,7 +262,7 @@
         if (!sound) {
             sound = "sfx_explosion_4";
         }
-        
+        this.sound.volume = 1;
         this.sound.play(sound);
     }
 

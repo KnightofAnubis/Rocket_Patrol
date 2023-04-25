@@ -5,13 +5,13 @@ class Menu extends Phaser.Scene {
     
     preload() {
         //loading audio
-        this.load.audio('sfx_select', 'assets/blip_select12.wav');
+        this.load.audio('sfx_select', 'assets/selection.wav');
         this.load.audio('sfx_explosion_1', 'assets/ah.wav');
         this.load.audio('sfx_explosion_2', 'assets/ohw.wav');
         this.load.audio('sfx_explosion_3', 'assets/roar.wav');
         this.load.audio('sfx_explosion_4', 'assets/screech.wav');
-        this.load.audio('sfx_rocket', 'assets/fire_arrow.wav');
-        this.load.audio('background_music', '' );
+        this.load.audio('sfx_rocket', 'assets/fire_arrow_2.wav');
+        this.load.audio('background_music', 'assets/dragon_patrol.wav');
         this.load.image('backDrop', 'assets/scottish_landscape.png');
     }
 
@@ -47,7 +47,7 @@ class Menu extends Phaser.Scene {
             //eazy mode
             game.settings = {
                 spaceshipSpeed: 3,
-                gameTimer: 10
+                gameTimer: 60
             }
             this.sound.play('sfx_select');
             this.scene.start('playScene');
