@@ -1,4 +1,4 @@
-class Play extends Phaser.Scene {
+    class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
     }
@@ -8,13 +8,28 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', 'assets/rocket.png');
         this.load.image('spaceship', 'assets/spaceship.png');
         this.load.image('starfield', 'assets/starfield.png');
+        this.load.image('sky', 'assets/game_background(5).png');
+        this.load.image('mountain', 'assets/game_background(4).png');
+        this.load.image('castle', 'assets/game_background(3).png');
+        this.load.image('hills', 'assets/game_background(2).png');
+        this.load.image('front', 'assets/game_background(1).png');
         //load spritesheet
         this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9}); 
     }
 
     create() {
+        const width = this.scale.width;
+        const height = this.scale.height;
         // place tile.sprite
-        this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
+        //this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
+
+        //parallax scrolling?
+        this.add.image(width * 0.5, height * 0.5, 'sky').setOrigin(0.5, 0.5).setScrollFactor(0);
+        this.mountain = this.add.tileSprite(0, 0,640, 480, 'mountain').setOrigin(0,-0.1);
+        this.castle = this.add.tileSprite(0, 0,640, 480, 'castle').setOrigin(0,0);
+        this.hills = this.add.tileSprite(0, 0,640, 480, 'hills').setOrigin(0,0);
+        this.front = this.add.tileSprite(0, 0,640, 480, 'front').setOrigin(0,0);
+
 
         //green
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize *2, 0x00FF00).setOrigin(0,0);
@@ -52,7 +67,7 @@ class Play extends Phaser.Scene {
 
         //display score
         let scoreConfig = {
-            fontFamily: 'Comic-sans',
+            fontFamily: 'Mistral',
             fontSize: '28px',
             backgroundColor: '#F3B141',
             color: '#843605',
@@ -64,6 +79,7 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
         
+        
         //initialize score
         this.p1Score = 0;
         this.scoreLeft = this.add.text(game.config.width - borderUISize*4 - borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
@@ -72,20 +88,29 @@ class Play extends Phaser.Scene {
         this.p2Score = 0;
         this.scoreRight = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p2Score, scoreConfig);
         
+        //highscore
+        this.highScore = 100;
+        
         //game over flag
         this.gameOver = false;
+        
 
         //60-sec play clock
-        scoreConfig.fixedWidth = 0;
-        this.clock = this.time.delayedCall(60000, () => {
+        
+        /*this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart of <- for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
-        }, null, this);
+        }, null, this);*/
+        this.time = this.add.text(game.config.width/2, borderUISize + borderPadding*2, '', scoreConfig);
+        this.startTime = Math.floor(this.sys.game.loop.time/1000); //converts it to normal seconds not the 6000 in the tutorial
+        
     }
 
 
     update() {
+        
+
         //check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
@@ -93,8 +118,25 @@ class Play extends Phaser.Scene {
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             this.scene.start("menuScene");
         }
-        this.starfield.tilePositionX -= 4;
+
+        //scrolling position
+        this.mountain.tilePositionX -= 1;
+        this.castle.tilePositionX -= 2.5;
+        this.hills.tilePositionX -= 2.5;
+        this.front.tilePositionX -= 4;
+
+
         if (!this.gameOver) {
+            /*timer display that was helped by Yasha Bell... I understood I need to get the game settings times from the Menu scene, but wasn't sure
+            how to implement the count down and everything I could find wanted to add and Event, but that didn't work for me.*/
+            this.currentTime = (Math.floor(this.sys.game.loop.time/1000) - this.startTime).toString();
+            this.time.setText(`Time: ${game.settings.gameTimer - this.currentTime }`);
+            if(this.currentTime > game.settings.gameTimer) {
+                scoreConfig.fixedWidth = 0; 
+                this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+                this.gameOver = true;
+        }
             this.p1Rocket.update();
             //new player
             this.p2Rocket.update();
@@ -103,10 +145,14 @@ class Play extends Phaser.Scene {
             this.ship02.update();
             this.ship03.update();
         }
+        
+
+
         //check collisions for player 1
         if(this.checkCollision(this.p1Rocket, this.ship03)) {
             this.p1Rocket.reset();
             this.shipExplode(this.p1Rocket, this.ship03);
+            
         }
         if(this.checkCollision(this.p1Rocket, this.ship02)) {
             this.p1Rocket.reset();
@@ -115,6 +161,7 @@ class Play extends Phaser.Scene {
         if(this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
             this.shipExplode(this.p1Rocket, this.ship01);
+            
         }
         //check collisions for player 2
         if(this.checkCollision(this.p2Rocket, this.ship03)) {
@@ -129,6 +176,8 @@ class Play extends Phaser.Scene {
             this.p2Rocket.reset();
             this.shipExplode(this.p2Rocket, this.ship01);
         }
+
+        
     }
 
     checkCollision(rocket, ship) {
@@ -156,6 +205,7 @@ class Play extends Phaser.Scene {
         if (rocket == this.p1Rocket) {
             this.p1Score += ship.points;
             this.scoreLeft.text = this.p1Score;
+            game.settings.gameTimer += ship.points;
             
         }
 
@@ -165,6 +215,18 @@ class Play extends Phaser.Scene {
             this.scoreRight.text = this.p2Score;
             
         }
-        this.sound.play('sfx_explosion');
+
+        //I had to modify it but the concept for this was taken from Tobe Osakwe's https://gist.github.com/thosakwe/bade2c36c81f41b4a17e6482797dd598
+        this.sounds = ["sfx_explosion_1","sfx_explosion_2","sfx_explosion_3", "sfx_explosion_4"];
+        var index = Math.round(Math.random() * this.sounds.length);  
+        var sound = this.sounds[index];
+        if (!sound) {
+            sound = "sfx_explosion_4";
+        }
+        
+        this.sound.play(sound);
     }
+
+        
+    
 }

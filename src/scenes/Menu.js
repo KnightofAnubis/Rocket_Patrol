@@ -6,18 +6,23 @@ class Menu extends Phaser.Scene {
     preload() {
         //loading audio
         this.load.audio('sfx_select', 'assets/blip_select12.wav');
-        this.load.audio('sfx_explosion', 'assets/explosion38.wav');
-        this.load.audio('sfx_rocket', 'assets/rocket_shot.wav');
+        this.load.audio('sfx_explosion_1', 'assets/ah.wav');
+        this.load.audio('sfx_explosion_2', 'assets/ohw.wav');
+        this.load.audio('sfx_explosion_3', 'assets/roar.wav');
+        this.load.audio('sfx_explosion_4', 'assets/screech.wav');
+        this.load.audio('sfx_rocket', 'assets/fire_arrow.wav');
+        this.load.audio('background_music', '' );
+        this.load.image('backDrop', 'assets/scottish_landscape.png');
     }
 
 
     create() {
         //real menu
         let menuConfig = {
-            fontFamily: "Courier",
-            fontSize: '21px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            fontFamily: "Mistral",
+            fontSize: '28px',
+            //backgroundColor: '#F3B141',
+            color: '#00000',
             align: 'right',
             padding: {
                 top: 5,
@@ -25,12 +30,11 @@ class Menu extends Phaser.Scene {
             },
             fixedWidth: 0
         }
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2, 'Player 1 use <--> arrows to move & (J) to fire', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize, 'Player 2 use A & D keys to move & (F) to fire', menuConfig).setOrigin(0.5);
-        menuConfig.backgroundColor = '#00FF00';
-        menuConfig.color = '#000';
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize*2 + borderPadding, 'Press <- for Novice or -> for Expert', menuConfig).setOrigin(0.5);
+        this.starfield = this.add.tileSprite(0, 0, 640, 480, 'backDrop').setOrigin(0, 0);
+        this.add.text(game.config.width/2, game.config.height/5 - borderUISize - borderPadding, 'DRAGON PATROL', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/5, 'Player 1 use <--> arrows to move & (J) to fire', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/5 + borderUISize*1.5, 'Player 2 use (A) & (D) keys to move & (F) to fire', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/5 + borderUISize*2 + borderPadding*2, 'Press <- for Novice or -> for Expert', menuConfig).setOrigin(0.5);
         
         //define keys... again
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -43,7 +47,7 @@ class Menu extends Phaser.Scene {
             //eazy mode
             game.settings = {
                 spaceshipSpeed: 3,
-                gameTimer: 60000
+                gameTimer: 10
             }
             this.sound.play('sfx_select');
             this.scene.start('playScene');
@@ -52,7 +56,7 @@ class Menu extends Phaser.Scene {
             //hoooord mooode
             game.settings = {
                 spaceshipSpeed: 4,
-                gameTimer: 45000
+                gameTimer: 45
             }
             this.sound.play('sfx_select');
             this.scene.start('playScene');
