@@ -12,6 +12,7 @@
 //left to do:
 //Using a texture atlas, create a new animated sprite for the Spaceship enemies (10)
 //Create a new enemy Spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (15)
+//Use Phaser's particle emitter to create a particle explosion when the rocket hits the spaceship (15)
 
 //Sources:
 //Yasha Bell helped me with displaying the timer
@@ -43,3 +44,5 @@ let borderUISize = game.config.height / 15;
 let borderPadding = borderUISize / 3;
 
 let keyF, keyR, keyLEFT, keyRIGHT, keyJ, keyA, keyD;
+let P2canFire = true;
+let P1canFire = true;

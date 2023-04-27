@@ -33,7 +33,7 @@
 
 
         //green
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize *2, 0x00FF00).setOrigin(0,0);
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize *2, 0x008080).setOrigin(0,0);
         //white
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
         this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
@@ -54,7 +54,11 @@
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-
+        //can a player fire
+        this.P1canFire = true;
+        P1canFire = this.P1canFire;
+        this.P2canFire = false;
+        P2canFire = this.P2canFire;
         //player 2 keys 
         keyJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J);
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -70,8 +74,8 @@
         let scoreConfig = {
             fontFamily: 'Mistral',
             fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            backgroundColor: '#000080',
+            color: '#00ffff',
             align: 'center',
             padding: {
                 top: 5,
@@ -103,7 +107,7 @@
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart of <- for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);*/
-        this.time = this.add.text(game.config.width/2, borderUISize + borderPadding*2, '', scoreConfig);
+        this.time = this.add.text(game.config.width/2.3, borderUISize + borderPadding*2, '', scoreConfig);
         this.startTime = Math.floor(this.sys.game.loop.time/1000); //converts it to normal seconds not the 6000 in the tutorial
         
         //Background music
@@ -244,7 +248,7 @@
         if (rocket == this.p1Rocket) {
             this.p1Score += ship.points;
             this.scoreLeft.text = this.p1Score;
-            game.settings.gameTimer += ship.points;
+            game.settings.gameTimer += ship.points/10;
             
         }
 
@@ -252,7 +256,7 @@
         //p2 score 
             this.p2Score += ship.points;
             this.scoreRight.text = this.p2Score;
-            
+            game.settings.gameTimer += ship.points/10;
         }
 
         //I had to modify it but the concept for this was taken from Tobe Osakwe's https://gist.github.com/thosakwe/bade2c36c81f41b4a17e6482797dd598
