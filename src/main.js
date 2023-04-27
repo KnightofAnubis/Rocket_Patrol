@@ -8,6 +8,7 @@
 //Create 4 new explosion sound effects and randomize which one plays on impact (10)
 //Implement parallax scrolling for the background (10)
 //Add your own (copyright-free) background music to the Play scene (please be mindful of the volume) (5)
+//Implement an alternating two-player mode (15)
 
 //left to do:
 //Using a texture atlas, create a new animated sprite for the Spaceship enemies (10)
@@ -29,8 +30,8 @@ let config = {
 let scoreConfig = {
     fontFamily: 'Mistral',
     fontSize: '28px',
-    backgroundColor: '#F3B141',
-    color: '#843605',
+    backgroundColor: '#000080',
+    color: '#00ffff',
     align: 'center',
     padding: {
         top: 5,
