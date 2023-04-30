@@ -1,3 +1,4 @@
+    
     class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
@@ -5,24 +6,24 @@
 
     preload() {
         //loading image/sprites
-        this.load.image('rocket', 'assets/rocket.png');
-        this.load.image('spaceship', 'assets/spaceship.png');
-        this.load.image('starfield', 'assets/starfield.png');
+        this.load.image('p1_rocket', 'assets/p1_arrow.png');
+        this.load.image('p2_rocket', 'assets/p2_arrow.png' );
+        this.load.image('spaceship', 'assets/dragon_2.png');
+        this.load.image('dragon', 'assets/dragon_1.png');
         this.load.image('sky', 'assets/game_background(5).png');
         this.load.image('mountain', 'assets/game_background(4).png');
         this.load.image('castle', 'assets/game_background(3).png');
         this.load.image('hills', 'assets/game_background(2).png');
         this.load.image('front', 'assets/game_background(1).png');
-        //load spritesheet
-        this.load.spritesheet('explosion', 'assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9}); 
+        this.load.image('particle', 'assets/blood.png');
+        
     }
 
     create() {
         const width = this.scale.width;
         const height = this.scale.height;
         
-        // place tile.sprite
-        //this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
+        
 
         //parallax scrolling?
         this.add.image(width * 0.5, height * 0.5, 'sky').setOrigin(0.5, 0.5).setScrollFactor(0);
@@ -32,7 +33,22 @@
         this.front = this.add.tileSprite(0, 0,640, 480, 'front').setOrigin(0,0);
 
 
-        //green
+       
+        
+        // add spaceships (x3)
+        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30, 1).setOrigin(0,0);
+        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20, 1).setOrigin(0, 0);
+        this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10, 1).setOrigin(0,0);
+        this.ship04 = new Spaceship(this, game.config.width - borderUISize, borderPadding*9.8, 'dragon', 0, 40, 3).setOrigin(0,0);
+        this.ship03.setScale(.8);
+        
+        this.ship02.setScale(.8);
+       
+        this.ship01.setScale(.8);
+        
+        this.ship04.setScale(.8);
+        
+         //green
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize *2, 0x008080).setOrigin(0,0);
         //white
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
@@ -41,14 +57,12 @@
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
 
         //add rocket (p1)
-        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket', false).setOrigin(0.5, 0);
+        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding/3.5, 'p1_rocket', false).setOrigin(0.5, 0);
+        this.p1Rocket.setScale(1);
         
         //player 2
-        this.p2Rocket = new Rocket(this,  game.config.width/3, game.config.height - borderUISize - borderPadding, 'rocket', true).setOrigin(0.5, 0);
-        // add spaceships (x3)
-        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0,0);
-        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20).setOrigin(0, 0);
-        this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
+        this.p2Rocket = new Rocket(this,  game.config.width/3, game.config.height - borderUISize - borderPadding/3.5, 'p2_rocket', true).setOrigin(0.5, 0);
+        this.p2Rocket.setScale(1);
         //define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -64,11 +78,6 @@
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
-        this.anims.create({
-            key: 'explode',
-            frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
-            frameRate: 30
-        })
 
         //display score
         let scoreConfig = {
@@ -187,6 +196,7 @@
             this.ship01.update();
             this.ship02.update();
             this.ship03.update();
+            this.ship04.update();
         }
         
 
@@ -206,6 +216,11 @@
             this.shipExplode(this.p1Rocket, this.ship01);
             
         }
+        if(this.checkCollision(this.p1Rocket, this.ship04)) {
+            this.p1Rocket.reset();
+            this.shipExplode(this.p1Rocket, this.ship04);
+            
+        }
         //check collisions for player 2
         if(this.checkCollision(this.p2Rocket, this.ship03)) {
             this.p2Rocket.reset();
@@ -219,13 +234,17 @@
             this.p2Rocket.reset();
             this.shipExplode(this.p2Rocket, this.ship01);
         }
+        if(this.checkCollision(this.p2Rocket, this.ship04)) {
+            this.p2Rocket.reset();
+            this.shipExplode(this.p2Rocket, this.ship04);
+        }
 
         
     }
 
     checkCollision(rocket, ship) {
-        //simple AABB checking
-        if (rocket.x < ship.x + ship.width && rocket.x + rocket.width > ship.x && rocket.y < ship.y +ship.height && rocket.height + rocket.y > ship.y) {
+        //simple AABB checking fixing?
+        if (rocket.x < ship.x + ship.width && rocket.x + rocket.width > ship.x && rocket.y < ship.y + ship.height && rocket.height + rocket.y > ship.y) {
             return true;
         } else {
             return false;
@@ -236,14 +255,22 @@
     shipExplode(rocket, ship) {
         //temp hide ship
         ship.alpha = 0;
-        //create explosion sprite at the ship's position
-        let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
-        boom.anims.play('explode');
-        boom.on('animationcomplete', () => {
-            ship.reset();
-            ship.alpha = 1;
-            boom.destroy();
+        //particle emitter
+        this.particles = this.add.particles(ship.x, ship.y, 'particle');
+        
+        this.add.particles(ship.x +30, ship.y + 30, 'particle', {
+            scale: 0.5,
+            speed: 100,
+            lifespan: 300,
+            gravityY: 700,
+            frequency: 5,
+            duration: 500,
         });
+        
+        ship.reset();
+        ship.alpha = 1;
+
+
         //score add and repaint??
         if (rocket == this.p1Rocket) {
             this.p1Score += ship.points;

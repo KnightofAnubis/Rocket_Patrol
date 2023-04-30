@@ -1,7 +1,7 @@
-//Kelsey Melott
+//Kelsey Melott <kmelott@ucsc.edu>
 //Dragon patrol
-//Time it took:
-//Done:
+//Time it took: 17+
+
 //Implement a new timing/scoring mechanism that adds time to the clock for successful hits (15)
 //Display the time remaining (in seconds) on the screen (10)
 //Create a new title screen (e.g., new artwork, typography, layout) (10)
@@ -9,11 +9,8 @@
 //Implement parallax scrolling for the background (10)
 //Add your own (copyright-free) background music to the Play scene (please be mindful of the volume) (5)
 //Implement an alternating two-player mode (15)
-
-//left to do:
-//Using a texture atlas, create a new animated sprite for the Spaceship enemies (10)
-//Create a new enemy Spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (15)
 //Use Phaser's particle emitter to create a particle explosion when the rocket hits the spaceship (15)
+//Create a new enemy Spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (15)
 
 //Sources:
 //Yasha Bell helped me with displaying the timer
