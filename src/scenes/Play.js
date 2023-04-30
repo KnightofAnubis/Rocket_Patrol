@@ -40,28 +40,31 @@
         this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20, 1).setOrigin(0, 0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10, 1).setOrigin(0,0);
         this.ship04 = new Spaceship(this, game.config.width - borderUISize, borderPadding*9.8, 'dragon', 0, 40, 3).setOrigin(0,0);
-        this.ship03.setScale(.8);
-        
-        this.ship02.setScale(.8);
-       
-        this.ship01.setScale(.8);
-        
-        this.ship04.setScale(.8);
-        
+        this.ship03.setScale(.6);
+        this.ship03.setSize(60,10);
+        this.ship02.setScale(.6);
+        this.ship02.setSize(60,10);
+        this.ship01.setScale(.6);
+        this.ship01.setSize(60, 10);
+        this.ship04.setScale(.6);
+        this.ship04.setSize(60,10);
+
+        //rocket bar
+        this.add.rectangle(0, game.config.height - borderUISize*1.5, game.config.width, borderUISize, 0x008080).setOrigin(0, 0);
          //green
         this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize *2, 0x008080).setOrigin(0,0);
         //white
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
+        this.add.rectangle(0, 0, game.config.width, borderUISize/2, 0xFFFFFF).setOrigin(0, 0);
+        this.add.rectangle(0, game.config.height - borderUISize/2, game.config.width, borderUISize/2, 0xFFFFFF).setOrigin(0, 0);
+        this.add.rectangle(0, 0, borderUISize/2, game.config.height, 0xFFFFFF).setOrigin(0, 0);
+        this.add.rectangle(game.config.width - borderUISize/2, 0, borderUISize/2, game.config.height, 0xFFFFFF).setOrigin(0, 0);
 
         //add rocket (p1)
-        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding/3.5, 'p1_rocket', false).setOrigin(0.5, 0);
+        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'p1_rocket', false).setOrigin(0.5, 0);
         this.p1Rocket.setScale(1);
         
         //player 2
-        this.p2Rocket = new Rocket(this,  game.config.width/3, game.config.height - borderUISize - borderPadding/3.5, 'p2_rocket', true).setOrigin(0.5, 0);
+        this.p2Rocket = new Rocket(this,  game.config.width/3, game.config.height - borderUISize - borderPadding, 'p2_rocket', true).setOrigin(0.5, 0);
         this.p2Rocket.setScale(1);
         //define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
@@ -189,6 +192,20 @@
                 this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
                 this.gameOver = true;
         }
+            if(this.p1Score > 1000){
+                scoreConfig.fixedWidth = 0; 
+                this.music.pause();
+                this.add.text(game.config.width/2, game.config.height/2, 'P1 Won!', scoreConfig).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+                this.gameOver = true;
+            }
+            if(this.p2Score > 1000){
+                scoreConfig.fixedWidth = 0; 
+                this.music.pause();
+                this.add.text(game.config.width/2, game.config.height/2, 'P2 Won!', scoreConfig).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
+                this.gameOver = true;
+            }
             this.p1Rocket.update();
             //new player
             this.p2Rocket.update();
